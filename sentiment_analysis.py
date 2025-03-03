@@ -1,4 +1,5 @@
 import pandas as pd 
+import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.feature_extraction.text import TfidfVectorizer 
 from nltk.tokenize import word_tokenize 
@@ -25,15 +26,26 @@ def tokenize(text):
 vectorizer = TfidfVectorizer(
     lowercase=True, 
     tokenizer=tokenize, 
-    #stop_words= selected_stopwords, 
+    stop_words= selected_stopwords, 
     ngram_range=(1, 2), 
-    max_features=2000
+    max_features=2500
 ) 
 
 vectorizer.fit(raw_df.Phrase)  
 
-print(vectorizer.get_feature_names_out()[:200])
+#print(vectorizer.get_feature_names_out()[:400]) 
 
+"""
+Transform Training and Test Data 
+- Transform phrases from training set 
+- Transform phrases from test set 
+- Look at some examples 
+"""
+
+inputs = vectorizer.transform(raw_df.Phrase)
+test_inputs = vectorizer.transform(test_df.Phrase.apply(lambda x: np.str_(x)))
+
+print(test_inputs.toarray()[0][:100])
 
 
 
