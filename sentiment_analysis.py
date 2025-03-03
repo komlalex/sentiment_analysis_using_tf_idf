@@ -28,7 +28,7 @@ def tokenize(text):
 vectorizer = TfidfVectorizer(
     lowercase=True, 
     tokenizer=tokenize, 
-    stop_words= selected_stopwords, 
+    #stop_words= selected_stopwords, 
     ngram_range=(1, 2), 
     max_features=2000
 ) 
@@ -56,7 +56,7 @@ train_inputs = inputs[:TRAIN_SIZE]
 train_targets = raw_df.Sentiment[:TRAIN_SIZE] 
 
 val_inputs = inputs[TRAIN_SIZE:]
-val_targets = raw_df.Sentiment[:TRAIN_SIZE] 
+val_targets = raw_df.Sentiment[TRAIN_SIZE:] 
 
 """
 Train Logistic Regression Model
@@ -71,4 +71,26 @@ print(f"Accuracy on Train dataset: {acc_score}")
 
 val_preds = model.predict(val_inputs) 
 acc_score = accuracy_score(val_targets, val_preds) 
-print(f"Accuracy on Val dataset: {acc_score}")
+print(f"Accuracy on Val dataset: {acc_score}") 
+
+"""
+Study Predictions on Sample Inputs
+""" 
+small_df = raw_df.sample(20) 
+
+small_inputs = vectorizer.transform(small_df.Phrase.apply(lambda x: np.str_(x)))
+
+small_preds = model.predict(small_inputs)
+
+#print(small_df)
+#print(small_preds) 
+
+"""
+Make Predictions on test dataset 
+- Make predictions on Test Dataset
+- Generate and add predictions to CSV file 
+"""
+test_preds = model.predict(test_inputs) 
+
+sub_df.Sentiment = test_preds 
+sub_df.to_csv("submission.csv")
