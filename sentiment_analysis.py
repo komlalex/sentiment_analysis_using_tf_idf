@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.feature_extraction.text import TfidfVectorizer 
 from sklearn.linear_model import LogisticRegression
+from sklearn.naive_bayes import MultinomialNB
 from sklearn.metrics import accuracy_score
 from nltk.corpus import stopwords 
 from nltk.tokenize import word_tokenize
@@ -94,3 +95,18 @@ test_preds = model.predict(test_inputs)
 
 sub_df.Sentiment = test_preds 
 sub_df.to_csv("submission.csv")
+
+"""Try Naive Bayes Model"""
+model1 = MultinomialNB(class_prior=(0.05, 0.2, 0.5, 0.2, 0.05)) 
+model1.fit(train_inputs, train_targets) 
+
+print(accuracy_score(train_targets, model1.predict(train_inputs))) 
+
+"""
+Models to experiment with 
+- Decision Trees
+- Random Forests
+- Gradient Boosting 
+- Naive Bayes 
+- SVM
+"""
